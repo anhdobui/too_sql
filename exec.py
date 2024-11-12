@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 from datetime import datetime
- 
+from utils import to_date
 global file_run 
 if 'dl' in [arg.strip() for arg in sys.argv[1:]]:
     file_run = 'ddl.sql'
@@ -10,6 +10,11 @@ else:
 print(f"File run: {file_run}")
 # Kết nối đến cơ sở dữ liệu SQLite
 conn = sqlite3.connect('a.db')  # Thay bằng đường dẫn file SQLite của bạn
+ 
+# Đăng ký hàm to_date vào SQLite
+conn.create_function("to_date", 2, to_date)
+#. . .
+###########
 cursor = conn.cursor()
  
 # Thực hiện truy vấn SQL
@@ -58,7 +63,7 @@ except sqlite3.Error as e:
  
     # Tạo thông báo lỗi
     error_message = f"{current_time} - Error: {e}\n\n"
-    error_message += "------------------------RESULT OLD---------------------------------------------\n"
+    error_message += "------------------------RESULT OLD---------------------------------------------\n\n"
  
     try:
         # Đọc nội dung cũ của file
@@ -79,3 +84,4 @@ finally:
     # Đảm bảo rằng kết nối được đóng đúng cách
     conn.close()
     print("Kết nối đã được đóng.")
+ 
